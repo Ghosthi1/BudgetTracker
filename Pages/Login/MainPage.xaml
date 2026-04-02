@@ -4,12 +4,19 @@
              x:Class="BudgetTracker.MainPage">
 
     <ScrollView>
-        <VerticalStackLayout Padding="32" Spacing="16" VerticalOptions="Center">
+        <VerticalStackLayout 
+            Padding="32" 
+            Spacing="16" 
+            VerticalOptions="Center" 
+            MaximumWidthRequest="{OnIdiom Phone=600, Desktop=1000}"
+            HorizontalOptions="Fill">
 
             <Entry Placeholder="Email" Keyboard="Email" />
             <Entry Placeholder="Password" IsPassword="True" />
             
             <Button Text="Sign In" />
+            
+            <Button Text="Temp next page" Clicked="OnNextPageClicked" />
             
         </VerticalStackLayout>
     </ScrollView>

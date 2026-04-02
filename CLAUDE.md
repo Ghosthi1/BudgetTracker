@@ -10,7 +10,7 @@ JetBrains Rider on Windows.
 
 BudgetTracker is a cross-platform budget tracking app built with **.NET MAUI** (v10.0) and **C#**, targeting Android, iOS, macOS Catalyst, and Windows. **Supabase** (v1.1.1) is used as the backend (database, auth, real-time). The MVVM pattern is supported via **CommunityToolkit.Mvvm** (v8.4.2).
 
-The app is being built from scratch on top of the default MAUI template — the template scaffolding is still in place (e.g. `MainPage` still has the counter button). It replaces a manual Excel bill-tracking spreadsheet.
+The app is being built from scratch on top of the default MAUI template. It replaces a manual Excel bill-tracking spreadsheet.
 
 **Core concept:** recurring bills (monthly or yearly) with a due day and a paid/unpaid status per cycle. Not a general transaction ledger — the primary model is `Bill`, not `Transaction`.
 
@@ -37,9 +37,19 @@ dotnet clean
 
 There are currently no tests in this project.
 
+## Page Structure
+
+Pages live under `Pages/` organised by feature:
+- `Pages/Login/MainPage.xaml` — login page (email + password `Entry` fields, Sign In button, temp nav button). Class: `BudgetTracker.MainPage`. Registered as the Shell root in `AppShell.xaml`.
+- `Pages/ShowBudgets/Budget.xaml` — bills/budget list page (empty so far). Class: `BudgetTracker.Pages.ShowBudgets.Budget`. Registered as route `"bills"` in `AppShell.xaml.cs`.
+
+Navigation from login → budget page: `await Shell.Current.GoToAsync("bills")` in `MainPage.xaml.cs`.
+
+The login page uses code-behind style (no ViewModel yet). Auth and session persistence are not yet wired up — Supabase is installed but not configured.
+
 ## Architecture
 
-**Navigation:** Shell-based navigation via `AppShell.xaml`. Add new pages as `ShellContent` entries or register routes with `Routing.RegisterRoute()`.
+**Navigation:** Shell-based navigation via `AppShell.xaml`. The root page is declared as `ShellContent` in `AppShell.xaml`. Additional pages are registered with `Routing.RegisterRoute()` in `AppShell.xaml.cs`.
 
 **Dependency Injection:** Configured in `MauiProgram.cs`. Register services, pages, and ViewModels there.
 
@@ -72,7 +82,7 @@ There are currently no tests in this project.
 ## Key Dependencies
 
 - `CommunityToolkit.Mvvm` — use `ObservableObject`, `[ObservableProperty]`, and `[RelayCommand]` for ViewModels
-- `Supabase` — backend client; package is installed but not yet wired up in `MauiProgram.cs`
+- `Supabase` — backend client; package is installed but not yet wired up in `MauiProgram.cs`. Auth plan: email + password login with session persisted in `SecureStorage` so users stay logged in across app launches.
 
 ## Domain Model
 

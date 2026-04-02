@@ -72,4 +72,17 @@
         <PackageReference Include="Supabase" Version="1.1.1" />
     </ItemGroup>
 
+    <ItemGroup>
+      <MauiXaml Update="Pages\Login\MainPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Pages\Login\MainPage.xaml.cs">
+        <DependentUpon>MainPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+    </ItemGroup>
+
 </Project>
