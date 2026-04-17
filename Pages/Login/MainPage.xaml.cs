@@ -49,9 +49,4 @@ public partial class MainPage : ContentPage
             ErrorLabel.IsVisible = true;
         }
     }
-
-    private async void OnNextPageClicked(object sender, EventArgs e)
-    {
-        await Shell.Current.GoToAsync("bills");
-    }
 }

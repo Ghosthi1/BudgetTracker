@@ -18,9 +18,7 @@
 
             <Button Text="Sign In" Clicked="OnSignInClicked" />
 
-            <Button Text="Temp next page" Clicked="OnNextPageClicked" />
-            
-        </VerticalStackLayout>
+</VerticalStackLayout>
     </ScrollView>
 
 </ContentPage>

@@ -2,30 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:BudgetTracker.Pages.ShowBudgets"
+             xmlns:models="clr-namespace:BudgetTracker.Models"
              x:Class="BudgetTracker.Pages.ShowBudgets.Budget">
 
-    <ContentPage.Resources>
-        <Style x:Key="HeaderCell" TargetType="Border">
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}" />
-            <Setter Property="Padding" Value="10,8" />
-            <Setter Property="StrokeThickness" Value="0" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 6" />
-        </Style>
-        <Style x:Key="HeaderLabel" TargetType="Label">
-            <Setter Property="TextColor" Value="White" />
-            <Setter Property="FontAttributes" Value="Bold" />
-            <Setter Property="HorizontalOptions" Value="Center" />
-        </Style>
-        <Style x:Key="DataCell" TargetType="Border">
-            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#F5F5F5, Dark=#2A2A2A}" />
-            <Setter Property="Padding" Value="10,8" />
-            <Setter Property="StrokeThickness" Value="0" />
-            <Setter Property="StrokeShape" Value="RoundRectangle 6" />
-        </Style>
-        <Style x:Key="DataLabel" TargetType="Label">
-            <Setter Property="HorizontalOptions" Value="Center" />
-        </Style>
-    </ContentPage.Resources>
 
     <VerticalStackLayout Padding="16" Spacing="12">
 
@@ -59,71 +38,91 @@
             </Border>
         </Grid>
 
-        <!-- Column headers -->
-        <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="6">
-            <Border Grid.Column="0" Style="{StaticResource HeaderCell}">
-                <Label Text="Name" Style="{StaticResource HeaderLabel}" />
-            </Border>
-            <Border Grid.Column="1" Style="{StaticResource HeaderCell}">
-                <Label Text="Amount" Style="{StaticResource HeaderLabel}" />
-            </Border>
-            <Border Grid.Column="2" Style="{StaticResource HeaderCell}">
-                <Label Text="Due" Style="{StaticResource HeaderLabel}" />
-            </Border>
-            <Border Grid.Column="3" Style="{StaticResource HeaderCell}">
-                <Label Text="Monthly" Style="{StaticResource HeaderLabel}" />
-            </Border>
-            <Border Grid.Column="4" Style="{StaticResource HeaderCell}">
-                <Label Text="Yearly" Style="{StaticResource HeaderLabel}" />
-            </Border>
-        </Grid>
-        
         <!-- Bill rows -->
         <CollectionView ItemsSource="{Binding Bills}">
             <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="10" />
             </CollectionView.ItemsLayout>
             <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="6">
-                        <Border Grid.Column="0" Style="{StaticResource DataCell}">
-                            <Label Text="{Binding Name}" Style="{StaticResource DataLabel}" />
-                        </Border>
-                        <Border Grid.Column="1" Style="{StaticResource DataCell}">
-                            <Label Text="{Binding Amount, StringFormat='${0:F2}'}" Style="{StaticResource DataLabel}" />
-                        </Border>
-                        <Border Grid.Column="2" Style="{StaticResource DataCell}">
-                            <Label Text="{Binding DueDay, StringFormat='{0}th'}" Style="{StaticResource DataLabel}" />
-                        </Border>
-                        <Border Grid.Column="3" Style="{StaticResource DataCell}">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding Frequency}" Value="Monthly">
-                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}" />
-                                </DataTrigger>
-                            </Border.Triggers>
-                            <Label Text="{Binding MonthlyEquivalent, StringFormat='${0:F2}'}" Style="{StaticResource DataLabel}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Monthly">
-                                        <Setter Property="TextColor" Value="White" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </Border>
-                        <Border Grid.Column="4" Style="{StaticResource DataCell}">
-                            <Border.Triggers>
-                                <DataTrigger TargetType="Border" Binding="{Binding Frequency}" Value="Yearly">
-                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}" />
-                                </DataTrigger>
-                            </Border.Triggers>
-                            <Label Text="{Binding YearlyEquivalent, StringFormat='${0:F2}'}" Style="{StaticResource DataLabel}">
-                                <Label.Triggers>
-                                    <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Yearly">
-                                        <Setter Property="TextColor" Value="White" />
-                                    </DataTrigger>
-                                </Label.Triggers>
-                            </Label>
-                        </Border>
-                    </Grid>
+                <DataTemplate x:DataType="models:Bill">
+                    <Border BackgroundColor="{AppThemeBinding Light=#FFFFFF, Dark=#2A2A2A}"
+                            StrokeThickness="0"
+                            StrokeShape="RoundRectangle 12"
+                            Padding="16,12"
+                            Margin="0,0,0,0">
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="4">
+
+                            <!-- Row 1: Name + frequency badge -->
+                            <Grid Grid.Row="0" ColumnDefinitions="*,Auto">
+                                <Label Grid.Column="0"
+                                       Text="{Binding Name}"
+                                       FontSize="16"
+                                       FontAttributes="Bold"
+                                       TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#F0F0F0}"
+                                       VerticalOptions="Center" />
+                                <Border Grid.Column="1"
+                                        Padding="8,3"
+                                        StrokeThickness="0"
+                                        StrokeShape="RoundRectangle 20"
+                                        VerticalOptions="Center">
+                                    <Border.Triggers>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Frequency}" Value="Monthly">
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}" />
+                                        </DataTrigger>
+                                        <DataTrigger TargetType="Border" Binding="{Binding Frequency}" Value="Yearly">
+                                            <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#5BA85A, Dark=#2E5E2D}" />
+                                        </DataTrigger>
+                                    </Border.Triggers>
+                                    <Label FontSize="11"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           HorizontalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Monthly">
+                                                <Setter Property="Text" Value="Monthly" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Yearly">
+                                                <Setter Property="Text" Value="Yearly" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </Border>
+                            </Grid>
+
+                            <!-- Row 2: Category -->
+                            <Label Grid.Row="1"
+                                   Text="{Binding Category}"
+                                   FontSize="12"
+                                   TextColor="{AppThemeBinding Light=#888888, Dark=#AAAAAA}" />
+
+                            <!-- Row 3: Amount + due day -->
+                            <Grid Grid.Row="2" ColumnDefinitions="*,Auto" Margin="0,4,0,0">
+                                <VerticalStackLayout Grid.Column="0" Spacing="1">
+                                    <Label Text="{Binding Amount, StringFormat='${0:F2}'}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="{AppThemeBinding Light=#1A1A1A, Dark=#F0F0F0}" />
+                                    <Label FontSize="11"
+                                           TextColor="{AppThemeBinding Light=#888888, Dark=#AAAAAA}">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Monthly">
+                                                <Setter Property="Text" Value="{Binding YearlyEquivalent, StringFormat='${0:F2}/yr'}" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Yearly">
+                                                <Setter Property="Text" Value="{Binding MonthlyEquivalent, StringFormat='${0:F2}/mo'}" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                </VerticalStackLayout>
+                                <Label Grid.Column="1"
+                                       Text="{Binding DueDay, StringFormat='Due: {0}th'}"
+                                       FontSize="13"
+                                       TextColor="{AppThemeBinding Light=#555555, Dark=#AAAAAA}"
+                                       VerticalOptions="Center" />
+                            </Grid>
+
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
