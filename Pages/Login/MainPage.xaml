@@ -11,11 +11,13 @@
             MaximumWidthRequest="{OnIdiom Phone=600, Desktop=1000}"
             HorizontalOptions="Fill">
 
-            <Entry Placeholder="Email" Keyboard="Email" />
-            <Entry Placeholder="Password" IsPassword="True" />
-            
-            <Button Text="Sign In" />
-            
+            <Entry x:Name="EmailEntry" Placeholder="Email" Keyboard="Email" />
+            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+
+            <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
+
+            <Button Text="Sign In" Clicked="OnSignInClicked" />
+
             <Button Text="Temp next page" Clicked="OnNextPageClicked" />
             
         </VerticalStackLayout>
