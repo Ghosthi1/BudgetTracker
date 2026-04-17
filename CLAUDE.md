@@ -14,7 +14,7 @@ The app is being built from scratch on top of the default MAUI template. It repl
 
 **Core concept:** recurring bills (monthly or yearly) with a due day and a paid/unpaid status per cycle. Not a general transaction ledger — the primary model is `Bill`, not `Transaction`.
 
-Core features to implement: listing bills, marking them as paid, seeing what's due/upcoming in the current cycle, categorisation, and a summary view — backed by Supabase for persistence and user authentication.
+Core features to implement: listing bills, seeing what's due/upcoming in the current cycle, and categorisation — backed by Supabase for persistence and user authentication.
 
 ## Build & Run Commands
 
@@ -92,5 +92,4 @@ The login page uses code-behind style (no ViewModel yet). Auth and session persi
 - `decimal Amount`
 - `int DueDay` — day of month (monthly) or day of year (yearly)
 - `Frequency Frequency` — `Monthly` or `Yearly` enum
-- `bool IsPaid` — paid this cycle?
 - `string Category` — e.g. "Subscriptions", "Utilities"

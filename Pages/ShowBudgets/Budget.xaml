@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:BudgetTracker.Pages.ShowBudgets"
              x:Class="BudgetTracker.Pages.ShowBudgets.Budget">
 
     <ContentPage.Resources>
@@ -29,57 +29,117 @@
 
     <VerticalStackLayout Padding="16" Spacing="12">
 
+        <!-- User bar -->
+        <Grid ColumnDefinitions="*,Auto">
+            <Label Grid.Column="0"
+                   Text="{Binding CurrentUserEmail, StringFormat='Logged in as {0}'}"
+                   VerticalOptions="Center"
+                   FontSize="13"
+                   TextColor="{AppThemeBinding Light=#555, Dark=#AAA}" />
+            <Button Grid.Column="1"
+                    Text="Log Out"
+                    Clicked="OnLogoutClicked"
+                    BackgroundColor="Transparent"
+                    TextColor="{AppThemeBinding Light=#D94A4A, Dark=#FF6B6B}"
+                    FontSize="13"
+                    Padding="8,4" />
+        </Grid>
+
+        <!-- Summary boxes -->
         <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
             <Border Grid.Column="0"
                     BackgroundColor="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}"
                     Padding="16" StrokeThickness="0" StrokeShape="RoundRectangle 10">
-                <Label Text="Total Yearly" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
+                <Label Text="{Binding TotalYearly, StringFormat='Yearly Total: ${0:F2}'}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
             </Border>
             <Border Grid.Column="1"
                     BackgroundColor="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}"
                     Padding="16" StrokeThickness="0" StrokeShape="RoundRectangle 10">
-                <Label Text="Total Monthly" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
+                <Label Text="{Binding TotalMonthly, StringFormat='Monthly Total: ${0:F2}'}" TextColor="White" FontAttributes="Bold" HorizontalOptions="Center" />
             </Border>
         </Grid>
 
-        <Grid RowDefinitions="Auto,Auto,Auto"
-              ColumnDefinitions="*,*,*"
-              RowSpacing="6"
-              ColumnSpacing="6">
+        <!-- Column headers -->
+        <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="6">
+            <Border Grid.Column="0" Style="{StaticResource HeaderCell}">
+                <Label Text="Name" Style="{StaticResource HeaderLabel}" />
+            </Border>
+            <Border Grid.Column="1" Style="{StaticResource HeaderCell}">
+                <Label Text="Amount" Style="{StaticResource HeaderLabel}" />
+            </Border>
+            <Border Grid.Column="2" Style="{StaticResource HeaderCell}">
+                <Label Text="Due" Style="{StaticResource HeaderLabel}" />
+            </Border>
+            <Border Grid.Column="3" Style="{StaticResource HeaderCell}">
+                <Label Text="Monthly" Style="{StaticResource HeaderLabel}" />
+            </Border>
+            <Border Grid.Column="4" Style="{StaticResource HeaderCell}">
+                <Label Text="Yearly" Style="{StaticResource HeaderLabel}" />
+            </Border>
+        </Grid>
+        
+        <!-- Bill rows -->
+        <CollectionView ItemsSource="{Binding Bills}">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="6" />
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,*,*,*,*" ColumnSpacing="6">
+                        <Border Grid.Column="0" Style="{StaticResource DataCell}">
+                            <Label Text="{Binding Name}" Style="{StaticResource DataLabel}" />
+                        </Border>
+                        <Border Grid.Column="1" Style="{StaticResource DataCell}">
+                            <Label Text="{Binding Amount, StringFormat='${0:F2}'}" Style="{StaticResource DataLabel}" />
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource DataCell}">
+                            <Label Text="{Binding DueDay, StringFormat='{0}th'}" Style="{StaticResource DataLabel}" />
+                        </Border>
+                        <Border Grid.Column="3" Style="{StaticResource DataCell}">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding Frequency}" Value="Monthly">
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Label Text="{Binding MonthlyEquivalent, StringFormat='${0:F2}'}" Style="{StaticResource DataLabel}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Monthly">
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
+                        <Border Grid.Column="4" Style="{StaticResource DataCell}">
+                            <Border.Triggers>
+                                <DataTrigger TargetType="Border" Binding="{Binding Frequency}" Value="Yearly">
+                                    <Setter Property="BackgroundColor" Value="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}" />
+                                </DataTrigger>
+                            </Border.Triggers>
+                            <Label Text="{Binding YearlyEquivalent, StringFormat='${0:F2}'}" Style="{StaticResource DataLabel}">
+                                <Label.Triggers>
+                                    <DataTrigger TargetType="Label" Binding="{Binding Frequency}" Value="Yearly">
+                                        <Setter Property="TextColor" Value="White" />
+                                    </DataTrigger>
+                                </Label.Triggers>
+                            </Label>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
 
-        <!-- Row 0 — Header -->
-        <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource HeaderCell}">
-            <Label Text="Name" Style="{StaticResource HeaderLabel}" />
-        </Border>
-        <Border Grid.Row="0" Grid.Column="1" Style="{StaticResource HeaderCell}">
-            <Label Text="Amount" Style="{StaticResource HeaderLabel}" />
-        </Border>
-        <Border Grid.Row="0" Grid.Column="2" Style="{StaticResource HeaderCell}">
-            <Label Text="Due" Style="{StaticResource HeaderLabel}" />
-        </Border>
-
-        <!-- Row 1 -->
-        <Border Grid.Row="1" Grid.Column="0" Style="{StaticResource DataCell}">
-            <Label Text="Netflix" Style="{StaticResource DataLabel}" />
-        </Border>
-        <Border Grid.Row="1" Grid.Column="1" Style="{StaticResource DataCell}">
-            <Label Text="$17.99" Style="{StaticResource DataLabel}" />
-        </Border>
-        <Border Grid.Row="1" Grid.Column="2" Style="{StaticResource DataCell}">
-            <Label Text="15th" Style="{StaticResource DataLabel}" />
-        </Border>
-
-        <!-- Row 2 -->
-        <Border Grid.Row="2" Grid.Column="0" Style="{StaticResource DataCell}">
-            <Label Text="Spotify" Style="{StaticResource DataLabel}" />
-        </Border>
-        <Border Grid.Row="2" Grid.Column="1" Style="{StaticResource DataCell}">
-            <Label Text="$11.99" Style="{StaticResource DataLabel}" />
-        </Border>
-        <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource DataCell}">
-            <Label Text="1st" Style="{StaticResource DataLabel}" />
-        </Border>
-
+        <!-- Action buttons -->
+        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+            <Button Grid.Column="0" Text="+ Add Bill"
+                    Clicked="OnAddBillClicked"
+                    BackgroundColor="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}"
+                    TextColor="White"
+                    CornerRadius="10" />
+            <Button Grid.Column="1" Text="- Remove Bill"
+                    Clicked="OnRemoveBillClicked"
+                    BackgroundColor="{AppThemeBinding Light=#D94A4A, Dark=#8A2C2C}"
+                    TextColor="White"
+                    CornerRadius="10" />
         </Grid>
 
     </VerticalStackLayout>

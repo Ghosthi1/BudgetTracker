@@ -1,5 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 using Supabase;
+using BudgetTracker.Pages.ShowBudgets;
 
 namespace BudgetTracker;
 
@@ -10,6 +12,7 @@ public static class MauiProgram
         var builder = MauiApp.CreateBuilder();
         builder
             .UseMauiApp<App>()
+            .UseMauiCommunityToolkit()
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -23,6 +26,8 @@ public static class MauiProgram
         ));
 
         builder.Services.AddTransient<MainPage>();
+        builder.Services.AddTransient<Budget>();
+        builder.Services.AddSingleton<BudgetViewModel>();
 
 #if DEBUG
         builder.Logging.AddDebug();

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+               xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+               xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+               x:Class="BudgetTracker.Pages.ShowBudgets.AddBillPopup">
+
+    <Border BackgroundColor="{AppThemeBinding Light=White, Dark=#1E1E1E}"
+            Padding="24"
+            StrokeThickness="0"
+            StrokeShape="RoundRectangle 16"
+            WidthRequest="320">
+        <VerticalStackLayout Spacing="12">
+
+            <Label Text="Add Bill" FontAttributes="Bold" FontSize="18" />
+
+            <Entry x:Name="NameEntry" Placeholder="Name (e.g. Netflix)" />
+            <Entry x:Name="AmountEntry" Placeholder="Amount (e.g. 17.99)" Keyboard="Numeric" />
+            <DatePicker x:Name="DueDayPicker" />
+
+            <Picker x:Name="FrequencyPicker" Title="Frequency">
+                <Picker.Items>
+                    <x:String>Monthly</x:String>
+                    <x:String>Yearly</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <Label x:Name="ErrorLabel" TextColor="Red" IsVisible="False" />
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <Button Grid.Column="0" Text="Cancel" Clicked="OnCancelClicked"
+                        BackgroundColor="{AppThemeBinding Light=#E0E0E0, Dark=#444}"
+                        TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                <Button Grid.Column="1" Text="Add" Clicked="OnAddClicked"
+                        BackgroundColor="{AppThemeBinding Light=#4A90D9, Dark=#2C5F8A}"
+                        TextColor="White" />
+            </Grid>
+
+        </VerticalStackLayout>
+    </Border>
+
+</toolkit:Popup>

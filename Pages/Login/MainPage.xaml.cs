@@ -1,4 +1,4 @@
-﻿using Supabase;
+using Supabase;
 
 namespace BudgetTracker;
 
@@ -12,12 +12,35 @@ public partial class MainPage : ContentPage
         _supabase = supabase;
     }
 
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        var accessToken  = await SecureStorage.GetAsync("access_token");
+        var refreshToken = await SecureStorage.GetAsync("refresh_token");
+
+        if (accessToken is null || refreshToken is null) return;
+
+        try
+        {
+            await _supabase.Auth.SetSession(accessToken, refreshToken);
+            if (_supabase.Auth.CurrentUser is not null)
+                await Shell.Current.GoToAsync("bills");
+        }
+        catch
+        {
+            SecureStorage.Remove("access_token");
+            SecureStorage.Remove("refresh_token");
+        }
+    }
+
     private async void OnSignInClicked(object sender, EventArgs e)
     {
         ErrorLabel.IsVisible = false;
         try
         {
-            await _supabase.Auth.SignIn(EmailEntry.Text, PasswordEntry.Text);
+            var session = await _supabase.Auth.SignIn(EmailEntry.Text, PasswordEntry.Text);
+            await SecureStorage.SetAsync("access_token",  session!.AccessToken!);
+            await SecureStorage.SetAsync("refresh_token", session!.RefreshToken!);
             await Shell.Current.GoToAsync("bills");
         }
         catch (Exception ex)
